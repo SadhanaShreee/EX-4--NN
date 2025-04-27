@@ -1,8 +1,8 @@
 
-<H3>ENTER YOUR NAME</H3>
-<H3>ENTER YOUR REGISTER NO.</H3>
+<H3>NAME : Sadhana Shree B</H3>
+<H3>REGISTER NO: 212223230177</H3>
 <H3>EX. NO.4</H3>
-<H3>DATE:</H3>
+<H3>DATE: </H3>
 <H1 ALIGN =CENTER>Implementation of MLP with Backpropagation for Multiclassification</H1>
 <H3>Aim:</H3>
 To implement a Multilayer Perceptron for Multi classification
@@ -114,13 +114,71 @@ Normalize our dataset.
 
 8. Finally, call the functions confusion_matrix(), and the classification_report() in order to evaluate the performance of our classifier.
 
-<H3>Program:</H3> 
+## Program:
+```
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.impute import SimpleImputer
+import seaborn as sns
+import matplotlib.pyplot as plt
 
-Insert your code here
+# Read the Iris dataset from CSV
+df = pd.read_csv('Iris_data.csv')
 
-<H3>Output:</H3>
+# Check for missing values in the dataset
+print(df.isnull().sum())
 
-Show your results here
+# Impute missing values for features (using the mean strategy)
+imputer = SimpleImputer(strategy='mean')
 
-<H3>Result:</H3>
+# Apply the imputer to the feature data
+X = imputer.fit_transform(df.drop('species', axis=1).values)  # Update 'species' to match your column name
+y = df['species'].values  # Target labels
+
+# Check again for missing values after imputation (just for verification)
+print(pd.DataFrame(X).isnull().sum())
+
+# Split the dataset into training and testing sets (80% train, 20% test)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Standardize the features
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# Initialize the MLP classifier (hidden layer with 100 neurons)
+mlp = MLPClassifier(hidden_layer_sizes=(100,), max_iter=1000, random_state=42)
+
+# Train the model
+mlp.fit(X_train, y_train)
+
+# Predict the classes for the test set
+y_pred = mlp.predict(X_test)
+
+# Evaluate the accuracy of the model
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Accuracy: {accuracy * 100:.2f}%')
+
+# Compute the confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+
+# Plot the confusion matrix using a heatmap
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=df['species'].unique(), yticklabels=df['species'].unique())
+plt.xlabel('Predicted')
+plt.ylabel('True')
+plt.title('Confusion Matrix')
+plt.show()
+
+```
+
+## Output:
+![image](https://github.com/user-attachments/assets/3d559491-7dcb-4767-99ef-db3155091700)
+![image](https://github.com/user-attachments/assets/93efbf59-b15d-42df-be75-2f0b39ab06be)
+![image](https://github.com/user-attachments/assets/1b9ad451-22b7-4fea-b7dc-4f1bad74c498)
+
+
+## Result:
 Thus, MLP is implemented for multi-classification using python.
